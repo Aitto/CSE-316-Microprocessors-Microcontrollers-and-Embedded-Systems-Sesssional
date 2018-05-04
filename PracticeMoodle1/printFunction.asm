@@ -1,0 +1,26 @@
+INCLUDE 'EMU8086.INC'
+.MODEL SMALL
+.STACK 100H
+.DATA
+
+.CODE
+
+
+MAIN PROC
+    
+    MOV BH,2
+    MOV BL,1
+    
+    PRINTN "PRINT WITH NEW LINE "
+    PRINT "PRINT WITHOUT"
+    PRINT "NEW LINE"
+    
+    
+   
+    
+    
+    MOV AH,4CH
+    INT 21H
+    
+    MAIN ENDP
+END MAIN
