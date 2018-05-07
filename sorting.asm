@@ -146,7 +146,7 @@ MAIN PROC
     PUSH DX
     
     
-    CALL SORTS
+    CALL SORT
     
     ;RETREIVING DATA
     POP DX
@@ -178,14 +178,16 @@ SORT PROC
     
     PRINTN "SORTING... ... "
     
-    MOV I,0
-    MOV AX,TELEMENTS    ;I=0
+    MOV I,0             ;I = 0
+    
+    MOV AX,TELEMENTS    
     MOV BX,2
     MUL BX
+    
     MOV FL,AX           ;FL=N
     SUB FL,2              ;FL=N-1
     
-    ;FOR(INT I=0;I<N-1;I++
+    ;FOR(INT I=0;I<N-1;I++)
     
     FORS:
         
@@ -193,17 +195,18 @@ SORT PROC
         CMP I,AX
         JGE END_FORS ;IF(I>=N) BREAK;
         
-        MOV AX,I
+        MOV AX,I         ;AX=I
         MOV MINDEX,AX    ;MINDEX=I
         
-        MOV J,AX
-        ADD J,2
+        MOV J,AX         ;J=I
+        ADD J,2          ;J=I+1
         
         WHILES:
             
             MOV BX,2
-            MOV AX,TELEMENTS
-            MUL BX
+            MOV AX,TELEMENTS     ;AX=N
+            MUL BX               
+            
             CMP J,AX             ;IF(J>=N) BREAK
             JGE END_WHILES 
             
@@ -213,36 +216,40 @@ SORT PROC
             
             MOV BX,MINDEX
             MOV AX,ARRAY[BX]     ;EL2=ARRAY[MINDEX]
-            MOV EL2,AX
+            MOV EL2,AX           ;AX=ARRAY[MINDEX]
             
             CMP EL1,AX
             JLE ESCP             ;IF(EL1<EL2) MINDEX=AX
-            MOV AX,J             ;MINDEX
+            MOV AX,J             ;MINDEX=J
             MOV MINDEX,AX
             
             ESCP:
+                 
             
-            MOV BX,MINDEX
-            MOV AX,ARRAY[BX]
-            MOV EL1,AX          ;EL1=ARR[MINDEX] 
-            
-            MOV BX,I
-            MOV AX,ARRAY[BX]    ;EL2=ARRAY[I]
-            MOV EL2,AX
-            
-            MOV BX,MINDEX
-            MOV ARRAY[BX],AX    ;ARRAY[MINDEX]=ARRAY[I]
-            
-            MOV BX,I
-            MOV AX,EL1          ;ARRAY[I]=ARRAY[MINDEX]
-            MOV ARRAY[BX],AX     
-            
-            ADD J,2
+            ADD J,2             ;J=J+1
             
         JMP WHILES
         END_WHILES:
+        
+        
+            ;SWAP
+            
+            MOV BX,MINDEX
+            MOV AX,ARRAY[BX]    ;AX=ARRAY[MINDEX]
+            MOV EL1,AX          ;EL1=ARRAY[MINDEX] 
+            
+            MOV BX,I
+            MOV AX,ARRAY[BX]    ;EL2=ARRAY[I]
+            MOV EL2,AX          ;AX=ARRAY[I]
+            
+            MOV BX,MINDEX
+            XCHG ARRAY[BX],AX    ;ARRAY[MINDEX]=ARRAY[I]
+            
+            MOV BX,I
+            ;MOV AX,EL1          ;ARRAY[I]=ARRAY[MINDEX]
+            XCHG ARRAY[BX],AX
     
-        ADD I,2
+        ADD I,2     ;I=I+1
         
     JMP FORS
     END_FORS:
@@ -287,8 +294,6 @@ SHOW PROC
         WHILE:
             
             MOV BX,10
-            CMP AX,0
-            JE END_WHILE
             
             DIV BX
             
@@ -300,7 +305,9 @@ SHOW PROC
             
             ;MOV AX,TEMP
             INC DIGITS
-            MOV DX,0
+            MOV DX,0 
+            CMP AX,0
+            JE END_WHILE
             JMP WHILE
             
         END_WHILE:
@@ -315,12 +322,11 @@ SHOW PROC
         INT 21H
         
         PWHILE:
-            
             POP DX
             ADD DL,30H
             INT 21H
         
-        LOOP PWHILE: 
+        LOOP PWHILE:  
         
         POP CX
         
